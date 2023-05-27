@@ -1,4 +1,5 @@
 using dotnet_rpg.Models;
+using dotnet_rpg.Services.CharecterService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_rpg.Controllers
@@ -13,20 +14,27 @@ namespace dotnet_rpg.Controllers
     
        };
 
+        public ICharecterService _CharecterService { get; }
+
+        public CharecterController(ICharecterService charecterService)
+       {
+            _CharecterService = charecterService;
+        }
+
 [HttpGet("GetAll")]
-       public ActionResult<Charecter> Get() {
-        return Ok(charecters);
+       public async Task<ActionResult<ServiceResponse<Charecter>>> Get() {
+        return Ok(await _CharecterService.GetAllCharecter());
        }
        [HttpGet("{id}")]
-       public ActionResult<Charecter> GetSingle(int id) {
-        return Ok(charecters.FirstOrDefault(c => c.Id == id));
+
+       public async Task<ActionResult<ServiceResponse<Charecter>>> GetSingle(int id) {
+        return Ok(await _CharecterService.GetCharecterById(id));
        }
 
 [HttpPost]
-       public ActionResult<List<Charecter>> AddCharecter(Charecter newCharecter) {
+       public async Task<ActionResult<ServiceResponse<List<Charecter>>>> AddCharecter(Charecter newCharecter) {
 
-charecters.Add(newCharecter);
-return Ok(charecters);
+return Ok(await _CharecterService.AddCharecter(newCharecter));
 
        }
     }
